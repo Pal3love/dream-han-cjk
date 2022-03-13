@@ -121,7 +121,7 @@ cd ../..
 
 # Rename:
 # 1. Add appendix "J" to Japanese files;
-# 2. Remove VF-related component;
+# 2. Remove VF-related components;
 # 3. Substitute "Source" with "Dream".
 cd ${temp_folder}
 rename "s/^SourceHanSans-/SourceHanSansJ-/" SourceHanSans-*.ttf
