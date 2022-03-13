@@ -7,7 +7,7 @@ release_folder="release"
 
 style_linked_weights=(40 70)
 weights=(25 30 35 40 45 50 55 60 65 70 75 80 85 90)
-families=(OpenHanSansSC OpenHanSansTC OpenHanSansHC OpenHanSansJ OpenHanSansK OpenHanSansCN OpenHanSansTW OpenHanSansHK OpenHanSansJP OpenHanSansKR OpenHanSansHWSC OpenHanSansHWTC OpenHanSansHWHC OpenHanSansHWJ OpenHanSansHWK OpenHanSerifSC OpenHanSerifTC OpenHanSerifHC OpenHanSerifJ OpenHanSerifK OpenHanSerifCN OpenHanSerifTW OpenHanSerifHK OpenHanSerifJP OpenHanSerifKR)
+families=(DreamHanSansSC DreamHanSansTC DreamHanSansHC DreamHanSansJ DreamHanSansK DreamHanSansCN DreamHanSansTW DreamHanSansHK DreamHanSansJP DreamHanSansKR DreamHanSansHWSC DreamHanSansHWTC DreamHanSansHWHC DreamHanSansHWJ DreamHanSansHWK DreamHanSerifSC DreamHanSerifTC DreamHanSerifHC DreamHanSerifJ DreamHanSerifK DreamHanSerifCN DreamHanSerifTW DreamHanSerifHK DreamHanSerifJP DreamHanSerifKR)
 
 
 function instantiate() {
@@ -43,18 +43,18 @@ function patch() {
 
 function makeTtc() {
   for weight in ${weights[@]}; do {
-    otf2otc -o OpenHanSans-W${weight}.ttc OpenHanSansSC-W${weight}.ttf OpenHanSansTC-W${weight}.ttf OpenHanSansHC-W${weight}.ttf OpenHanSansJ-W${weight}.ttf OpenHanSansK-W${weight}.ttf
-    otf2otc -o OpenHanSansHW-W${weight}.ttc OpenHanSansHWSC-W${weight}.ttf OpenHanSansHWTC-W${weight}.ttf OpenHanSansHWHC-W${weight}.ttf OpenHanSansHWJ-W${weight}.ttf OpenHanSansHWK-W${weight}.ttf
-    otf2otc -o OpenHanSerif-W${weight}.ttc OpenHanSerifSC-W${weight}.ttf OpenHanSerifTC-W${weight}.ttf OpenHanSerifHC-W${weight}.ttf OpenHanSerifJ-W${weight}.ttf OpenHanSerifK-W${weight}.ttf
+    otf2otc -o DreamHanSans-W${weight}.ttc DreamHanSansSC-W${weight}.ttf DreamHanSansTC-W${weight}.ttf DreamHanSansHC-W${weight}.ttf DreamHanSansJ-W${weight}.ttf DreamHanSansK-W${weight}.ttf
+    otf2otc -o DreamHanSansHW-W${weight}.ttc DreamHanSansHWSC-W${weight}.ttf DreamHanSansHWTC-W${weight}.ttf DreamHanSansHWHC-W${weight}.ttf DreamHanSansHWJ-W${weight}.ttf DreamHanSansHWK-W${weight}.ttf
+    otf2otc -o DreamHanSerif-W${weight}.ttc DreamHanSerifSC-W${weight}.ttf DreamHanSerifTC-W${weight}.ttf DreamHanSerifHC-W${weight}.ttf DreamHanSerifJ-W${weight}.ttf DreamHanSerifK-W${weight}.ttf
   } & done
   wait
 }
 
 function deleteTtf() {
   for weight in ${weights[@]}; do
-    rm -f OpenHanSansSC-W${weight}.ttf OpenHanSansTC-W${weight}.ttf OpenHanSansHC-W${weight}.ttf OpenHanSansJ-W${weight}.ttf OpenHanSansK-W${weight}.ttf
-    rm -f OpenHanSansHWSC-W${weight}.ttf OpenHanSansHWTC-W${weight}.ttf OpenHanSansHWHC-W${weight}.ttf OpenHanSansHWJ-W${weight}.ttf OpenHanSansHWK-W${weight}.ttf
-    rm -f OpenHanSerifSC-W${weight}.ttf OpenHanSerifTC-W${weight}.ttf OpenHanSerifHC-W${weight}.ttf OpenHanSerifJ-W${weight}.ttf OpenHanSerifK-W${weight}.ttf
+    rm -f DreamHanSansSC-W${weight}.ttf DreamHanSansTC-W${weight}.ttf DreamHanSansHC-W${weight}.ttf DreamHanSansJ-W${weight}.ttf DreamHanSansK-W${weight}.ttf
+    rm -f DreamHanSansHWSC-W${weight}.ttf DreamHanSansHWTC-W${weight}.ttf DreamHanSansHWHC-W${weight}.ttf DreamHanSansHWJ-W${weight}.ttf DreamHanSansHWK-W${weight}.ttf
+    rm -f DreamHanSerifSC-W${weight}.ttf DreamHanSerifTC-W${weight}.ttf DreamHanSerifHC-W${weight}.ttf DreamHanSerifJ-W${weight}.ttf DreamHanSerifK-W${weight}.ttf
   done
 }
 
@@ -73,33 +73,33 @@ function compress() {
   serifJpTtf=""
   serifKrTtf=""
   for weight in ${weights[@]}; do
-    sansTtc+="OpenHanSans-W${weight}.ttc "
-    sansHwTtc+="OpenHanSansHW-W${weight}.ttc "
-    serifTtc+="OpenHanSerif-W${weight}.ttc "
-    sansCnTtf+="OpenHanSansCN-W${weight}.ttf "
-    sansTwTtf+="OpenHanSansTW-W${weight}.ttf "
-    sansHkTtf+="OpenHanSansHK-W${weight}.ttf "
-    sansJpTtf+="OpenHanSansJP-W${weight}.ttf "
-    sansKrTtf+="OpenHanSansKR-W${weight}.ttf "
-    serifCnTtf+="OpenHanSerifCN-W${weight}.ttf "
-    serifTwTtf+="OpenHanSerifTW-W${weight}.ttf "
-    serifHkTtf+="OpenHanSerifHK-W${weight}.ttf "
-    serifJpTtf+="OpenHanSerifJP-W${weight}.ttf "
-    serifKrTtf+="OpenHanSerifKR-W${weight}.ttf "
+    sansTtc+="DreamHanSans-W${weight}.ttc "
+    sansHwTtc+="DreamHanSansHW-W${weight}.ttc "
+    serifTtc+="DreamHanSerif-W${weight}.ttc "
+    sansCnTtf+="DreamHanSansCN-W${weight}.ttf "
+    sansTwTtf+="DreamHanSansTW-W${weight}.ttf "
+    sansHkTtf+="DreamHanSansHK-W${weight}.ttf "
+    sansJpTtf+="DreamHanSansJP-W${weight}.ttf "
+    sansKrTtf+="DreamHanSansKR-W${weight}.ttf "
+    serifCnTtf+="DreamHanSerifCN-W${weight}.ttf "
+    serifTwTtf+="DreamHanSerifTW-W${weight}.ttf "
+    serifHkTtf+="DreamHanSerifHK-W${weight}.ttf "
+    serifJpTtf+="DreamHanSerifJP-W${weight}.ttf "
+    serifKrTtf+="DreamHanSerifKR-W${weight}.ttf "
   done
-  zip OpenHanSans.zip ${sansTtc}
-  zip OpenHanSansHW.zip ${sansHwTtc}
-  zip OpenHanSerif.zip ${serifTtc}
-  zip OpenHanSansCN.zip ${sansCnTtf}
-  zip OpenHanSansTW.zip ${sansTwTtf}
-  zip OpenHanSansHK.zip ${sansHkTtf}
-  zip OpenHanSansJP.zip ${sansJpTtf}
-  zip OpenHanSansKR.zip ${sansKrTtf}
-  zip OpenHanSerifCN.zip ${serifCnTtf}
-  zip OpenHanSerifTW.zip ${serifTwTtf}
-  zip OpenHanSerifHK.zip ${serifHkTtf}
-  zip OpenHanSerifJP.zip ${serifJpTtf}
-  zip OpenHanSerifKR.zip ${serifKrTtf}
+  zip DreamHanSans.zip ${sansTtc}
+  zip DreamHanSansHW.zip ${sansHwTtc}
+  zip DreamHanSerif.zip ${serifTtc}
+  zip DreamHanSansCN.zip ${sansCnTtf}
+  zip DreamHanSansTW.zip ${sansTwTtf}
+  zip DreamHanSansHK.zip ${sansHkTtf}
+  zip DreamHanSansJP.zip ${sansJpTtf}
+  zip DreamHanSansKR.zip ${sansKrTtf}
+  zip DreamHanSerifCN.zip ${serifCnTtf}
+  zip DreamHanSerifTW.zip ${serifTwTtf}
+  zip DreamHanSerifHK.zip ${serifHkTtf}
+  zip DreamHanSerifJP.zip ${serifJpTtf}
+  zip DreamHanSerifKR.zip ${serifKrTtf}
 }
 
 
@@ -121,14 +121,14 @@ cd ../..
 
 # Rename:
 # 1. Add appendix "J" to Japanese files;
-# 2. Remove VF-related component;
-# 3. Substitute "Source" with "Open".
+# 2. Remove VF-related components;
+# 3. Substitute "Source" with "Dream".
 cd ${temp_folder}
 rename "s/^SourceHanSans-/SourceHanSansJ-/" SourceHanSans-*.ttf
 rename "s/^SourceHanSansHW-/SourceHanSansHWJ-/" SourceHanSansHW-*.ttf
 rename "s/^SourceHanSerif-/SourceHanSerifJ-/" SourceHanSerif-*.ttf
 rename "s/VF-//" *VF-*.ttf
-rename "s/^Source/Open/" Source*.ttf
+rename "s/^Source/Dream/" Source*.ttf
 
 # Generate TOML configuration files.
 # Rebuild `name` table with generated configuration file.
