@@ -85,6 +85,6 @@
 
 如需获取 Adobe 思源系列字体的设计、使用以及其他信息，请访问官方 GitHub 仓库。
 
-* 思源黑体（Source Han Sans）：https://github.com/adobe-fonts/source-han-sans
-* 思源宋体（Source Han Serif）：https://github.com/adobe-fonts/source-han-serif
-* 思源等宽（Source Han Mono）：https://github.com/adobe-fonts/source-han-mono
+* [思源黑体（Source Han Sans）](https://github.com/adobe-fonts/source-han-sans)
+* [思源宋体（Source Han Serif）](https://github.com/adobe-fonts/source-han-serif)
+* [思源等宽（Source Han Mono）](https://github.com/adobe-fonts/source-han-mono)
