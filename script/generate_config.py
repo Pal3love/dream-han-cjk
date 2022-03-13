@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 today: datetime = datetime.today()
-fontFamilies = ["OpenHanSans", "OpenHanSansHW", "OpenHanSerif"]
+fontFamilies = ["DreamHanSans", "DreamHanSansHW", "DreamHanSerif"]
 weights = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]
 languagesAndRegions = ["SC", "TC", "HC", "J", "K", "CN", "TW", "HK", "JP", "KR"]
 
@@ -25,60 +25,60 @@ languageNameKeyDict = {
     "KR": "ko"
 }
 sansTranslationDict = {
-    "SC": "开源黑体",
-    "CN": "开源黑体",
-    "TC": "開源黑體",
-    "TW": "開源黑體",
-    "HC": "開源黑體",
-    "HK": "開源黑體",
-    "J": "源開角ゴ",
-    "JP": "源開角ゴ",
-    "K": "원개고딕",
-    "KR": "원개고딕"
+    "SC": "梦源黑体",
+    "CN": "梦源黑体",
+    "TC": "夢源黑體",
+    "TW": "夢源黑體",
+    "HC": "夢源黑體",
+    "HK": "夢源黑體",
+    "J": "夢ノ角ゴ",
+    "JP": "夢ノ角ゴ",
+    "K": "꿈고딕",
+    "KR": "꿈고딕"
 }
 sansHwTranslationDict = {
-    "SC": "开源黑体 HW",
-    "CN": "开源黑体 HW",
-    "TC": "開源黑體 HW",
-    "TW": "開源黑體 HW",
-    "HC": "開源黑體 HW",
-    "HK": "開源黑體 HW",
-    "J": "源開角ゴ HW",
-    "JP": "源開角ゴ HW",
-    "K": "원개고딕 HW",
-    "KR": "원개고딕 HW"
+    "SC": "梦源黑体 HW",
+    "CN": "梦源黑体 HW",
+    "TC": "夢源黑體 HW",
+    "TW": "夢源黑體 HW",
+    "HC": "夢源黑體 HW",
+    "HK": "夢源黑體 HW",
+    "J": "夢ノ角ゴ HW",
+    "JP": "夢ノ角ゴ HW",
+    "K": "꿈고딕 HW",
+    "KR": "꿈고딕 HW"
 }
 serifTranslationDict = {
-    "SC": "开源宋体",
-    "CN": "开源宋体",
-    "TC": "開源宋體",
-    "TW": "開源宋體",
-    "HC": "開源宋體",
-    "HK": "開源宋體",
-    "J": "源開明朝",
-    "JP": "源開明朝",
-    "K": "원개명조",
-    "KR": "원개명조"
+    "SC": "梦源宋体",
+    "CN": "梦源宋体",
+    "TC": "夢源明體",
+    "TW": "夢源明體",
+    "HC": "夢源明體",
+    "HK": "夢源明體",
+    "J": "夢ノ明朝",
+    "JP": "夢ノ明朝",
+    "K": "꿈명조",
+    "KR": "꿈명조"
 }
 familyVersionDict = {
-    "OpenHanSans": 2.004,
-    "OpenHanSansHW": 2.004,
-    "OpenHanSerif": 2.001
+    "DreamHanSans": 2.004,
+    "DreamHanSansHW": 2.004,
+    "DreamHanSerif": 2.001
 }
 familyEnglishDict = {
-    "OpenHanSans": "Open Han Sans",
-    "OpenHanSansHW": "Open Han Sans HW",
-    "OpenHanSerif": "Open Han Serif"
+    "DreamHanSans": "Dream Han Sans",
+    "DreamHanSansHW": "Dream Han Sans HW",
+    "DreamHanSerif": "Dream Han Serif"
 }
 familyTranslationDict = {
-    "OpenHanSans": sansTranslationDict,
-    "OpenHanSansHW": sansHwTranslationDict,
-    "OpenHanSerif": serifTranslationDict
+    "DreamHanSans": sansTranslationDict,
+    "DreamHanSansHW": sansHwTranslationDict,
+    "DreamHanSerif": serifTranslationDict
 }
 
 
 def isRegionalHw(family: str, language: str) -> bool:
-    return family == "OpenHanSansHW" and language in ["CN", "TW", "HK", "JP", "KR"]
+    return family == "DreamHanSansHW" and language in ["CN", "TW", "HK", "JP", "KR"]
 
 
 def makeFontFamilyName(family: str, language: str):
@@ -121,7 +121,7 @@ def makeName(family: str, language: str, weight: int) -> dict:
         "designerURL": "https://github.com/Pal3love",
         "distributor": "Pal3love",
         "distributorID": "P3LV",
-        "distributorURL": "https://github.com/Pal3love/open-han-cjk",
+        "distributorURL": "https://github.com/Pal3love/dream-han-cjk",
         "license": 'This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.',
         "licenseURL": "http://scripts.sil.org/OFL"
     }
