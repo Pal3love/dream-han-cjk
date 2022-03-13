@@ -13,7 +13,7 @@
 
 ## 协议
 
-本字体以 [SIL Open Font License](http://scripts.sil.org/OFL) 发布，可免费用于商业用途。请随意二次修改。转载请注明原作者。
+本字体以 [SIL Open Font License](http://scripts.sil.org/OFL) 发布，可免费用于商业用途。字体文件可二次修改。转载请注明原作者。
 
 
 ## 特性
