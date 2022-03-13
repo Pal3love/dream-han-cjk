@@ -1,9 +1,9 @@
-# ![开源字体系列](image/png/title-black.png#gh-light-mode-only)![开源字体系列](image/png/title-white.png#gh-dark-mode-only)
+# ![梦源字体系列](image/png/title-black.png#gh-light-mode-only)![梦源字体系列](image/png/title-white.png#gh-dark-mode-only)
 
 
 ## 下载与安装
 
-请前往[**发布页面**](https://github.com/Pal3love/open-han-cjk/releases)下载最新版本的压缩包，解压后即可得到 TTC/TTC 字体文件。当前页面的“Code”按钮仅包含代码和源文件，不包含字体。
+请前往[**发布页面**](https://github.com/Pal3love/dream-han-cjk/releases)下载最新版本的压缩包，解压后即可得到 TTF/TTC 字体文件。当前页面的“Code”按钮仅包含代码和源文件，不包含字体。
 
 * [macOS](https://support.apple.com/en-us/HT201749)
 * [Linux](https://github.com/adobe-fonts/source-code-pro/issues/17#issuecomment-8967116)
@@ -40,7 +40,7 @@
 
 本系列的字重与思源黑体、思源宋体的对应关系如下。有对应则表示与思源系列完全相同：
 
-| 开源系列 | 思源黑体   | 思源宋体   |
+| 梦源字重 | 思源黑体   | 思源宋体   |
 |----------|------------|------------|
 | W25      | ExtraLight | ExtraLight |
 | W30      | Light      | Light      |
@@ -64,14 +64,14 @@
 
 ### 电脑配置
 
-为加快编译速度，编译脚本会同时编译 14 个字体文件，并在过程中产生大量中间文件。推荐 **4 核及以上处理器**、**> 10 GB 总内存**和 **> 12 GB 磁盘空间**。
+为加快编译速度，编译脚本会同时编译 14 个字体文件，并在过程中产生大量中间文件。推荐 **4 核及以上处理器**、**> 10 GB 总内存**和 **> 12 GB 硬盘空间**。
 
 ### 平台依赖
 
 本项目支持 Windows Linux 子系统（WSL）与 macOS 平台。请先确保以下依赖已安装：
 
 * Python 3.8 及以上
-* PyPI 包管理
+* PyPI 包管理（`pip`）
 * `pip install afdko`: [Adobe Font Development Kit for OpenType (AFDKO)](https://github.com/adobe-type-tools/afdko)
 * `pip install skia-pathops`: [skia-pathops](https://github.com/fonttools/skia-pathops)
 * `pip install fonttools`: [FontTools](https://github.com/fonttools/fonttools)
@@ -83,7 +83,7 @@
 
 * WSL: `cd` 进 script 目录后，执行 `./build_fonts_wsl.sh`
 * macOS: `cd` 进 script 目录后，执行 `./build_fonts_mac.sh`
-* 运行完成后，最终字体的 ZIP 压缩包将位于 open-han-cjk 根目录下新创建的 release 目录内。运行过程中产生的临时文件将会在结束时自动删除。
+* 运行完成后，最终字体的 ZIP 压缩包将位于 dream-han-cjk 根目录下新创建的 release 目录内。运行过程中产生的临时文件将会在结束时自动删除。
 
 
 ## 更多信息
