@@ -7,7 +7,7 @@ from fontTools.ttLib import TTFont
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 trim-english-font-family.py <fontfile>", file = sys.stderr)
+        print("Usage: python3 trim_english_font_family.py <fontfile>", file = sys.stderr)
         sys.exit(2)
     fontPath = sys.argv[1]
     font = TTFont(fontPath)

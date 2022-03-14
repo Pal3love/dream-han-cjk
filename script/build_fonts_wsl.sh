@@ -2,8 +2,10 @@
 
 
 binary_folder="binary"
-temp_folder="temp"
 release_folder="release"
+script_folder="script"
+source_folder="source"
+temp_folder="temp"
 
 style_linked_weights=(40 70)
 weights=(25 30 35 40 45 50 55 60 65 70 75 80 85 90)
@@ -32,10 +34,20 @@ function convert() {
   done
 }
 
-function patch() {
+function trimLegacyFamily() {
   for style_linked_weight in ${style_linked_weights[@]}; do
     for fontPath in `ls *"-W${style_linked_weight}.ttf"`; do {
-      python3 ../script/trim_english_font_family.py ${fontPath}
+      python3 ../${script_folder}/trim_english_font_family.py ${fontPath}
+    } & done
+    wait
+  done
+}
+
+function dropStatTable() {
+  for family in ${families[@]}; do
+    for weight in ${weights[@]}; do {
+      fontFileName="${family}-W${weight}.ttf"
+      python3 ../${script_folder}/drop_STAT_table.py ${fontFileName}
     } & done
     wait
   done
@@ -113,7 +125,7 @@ mkdir ${temp_folder}
 mkdir ${release_folder}
 
 # Instantiate fonts from VF masters.
-cd source/source-han-sans
+cd ${source_folder}/source-han-sans
 instantiate
 cd ../source-han-serif
 instantiate
@@ -132,15 +144,17 @@ rename "s/^Source/Dream/" Source*.ttf
 
 # Generate TOML configuration files.
 # Rebuild `name` table with generated configuration file.
-python3 ../script/generate_config.py
+python3 ../${script_folder}/generate_config.py
 convert
 
-# Patch style-linked font families.
+# Trim style-linked font legacy families.
+# Drop `STAT` table (containing variable font metadata) from all instance fonts.
 # Combine full language fonts into TTC files.
 # Delete duplicate TTF files.
 # Compress font files into ZIPs.
 cd ../${release_folder}
-patch
+trimLegacyFamily
+dropStatTable
 makeTtc
 deleteTtf
 compress
