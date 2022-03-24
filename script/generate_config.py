@@ -8,11 +8,43 @@ from datetime import datetime
 
 
 today: datetime = datetime.today()
-fontFamilies = ["DreamHanSans", "DreamHanSansHW", "DreamHanSerif"]
-weights = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]
-languagesAndRegions = ["SC", "TC", "HC", "J", "K", "CN", "TW", "HK", "JP", "KR"]
 
-languageNameKeyDict = {
+DEFAULT_LANGUAGE = "EN"
+
+fontGrandFamily: str = "fontGrandFamily"
+fontSansFamily: str = "fontSansFamily"
+fontSerifFamily: str = "fontSerifFamily"
+fontFamilySpaceSplit: str = "fontFamilySpaceSplit"
+fontLinearInterpolation: str = "fontLinearInterpolation"
+fontExponentialInterpolation: str = "fontExponentialInterpolation"
+fontStyleLinkRegular: str = "fontStyleLinkRegular"
+fontStyleLinkBold: str = "fontStyleLinkBold"
+
+fontVersion: float = 2.000
+fontSansVersion: float = 2.004
+fontSerifVersion: float = 2.001
+fontVersionString: str = "Version " + "{:.2f}".format(fontVersion) + "; Sans " + str(fontSansVersion) + "; Serif " + str(fontSerifVersion)
+
+typefaceFamilies = [fontSansFamily, fontSerifFamily]
+interpolationTypes = [fontLinearInterpolation, fontExponentialInterpolation]
+languageRegions = ["SC", "TC", "HC", "J", "K", "CN", "TW", "HK", "JP", "KR"]
+
+interpolationToWeights: dict = {
+    fontLinearInterpolation: [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90],
+    fontExponentialInterpolation: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+interpolationToStyleLink: dict = {
+    fontLinearInterpolation: {
+        fontStyleLinkRegular: 40,
+        fontStyleLinkBold: 70
+    },
+    fontExponentialInterpolation: {
+        fontStyleLinkRegular: 6,
+        fontStyleLinkBold: 12
+    }
+}
+languageRegionToCode: dict = {
+    "EN": "en",
     "SC": "zh-Hans",
     "CN": "zh-Hans",
     "TC": "zh-Hant",
@@ -24,99 +56,86 @@ languageNameKeyDict = {
     "K": "ko",
     "KR": "ko"
 }
-sansTranslationDict = {
-    "SC": "梦源黑体",
-    "CN": "梦源黑体",
-    "TC": "夢源黑體",
-    "TW": "夢源黑體",
-    "HC": "夢源黑體",
-    "HK": "夢源黑體",
-    "J": "夢ノ角ゴ",
-    "JP": "夢ノ角ゴ",
-    "K": "꿈고딕",
-    "KR": "꿈고딕"
-}
-sansHwTranslationDict = {
-    "SC": "梦源黑体 HW",
-    "CN": "梦源黑体 HW",
-    "TC": "夢源黑體 HW",
-    "TW": "夢源黑體 HW",
-    "HC": "夢源黑體 HW",
-    "HK": "夢源黑體 HW",
-    "J": "夢ノ角ゴ HW",
-    "JP": "夢ノ角ゴ HW",
-    "K": "꿈고딕 HW",
-    "KR": "꿈고딕 HW"
-}
-serifTranslationDict = {
-    "SC": "梦源宋体",
-    "CN": "梦源宋体",
-    "TC": "夢源明體",
-    "TW": "夢源明體",
-    "HC": "夢源明體",
-    "HK": "夢源明體",
-    "J": "夢ノ明朝",
-    "JP": "夢ノ明朝",
-    "K": "꿈명조",
-    "KR": "꿈명조"
-}
-familyVersionDict = {
-    "DreamHanSans": 2.004,
-    "DreamHanSansHW": 2.004,
-    "DreamHanSerif": 2.001
-}
-familyEnglishDict = {
-    "DreamHanSans": "Dream Han Sans",
-    "DreamHanSansHW": "Dream Han Sans HW",
-    "DreamHanSerif": "Dream Han Serif"
-}
-familyTranslationDict = {
-    "DreamHanSans": sansTranslationDict,
-    "DreamHanSansHW": sansHwTranslationDict,
-    "DreamHanSerif": serifTranslationDict
+languageCodeToLocalization: dict = {
+    "en": {
+        fontGrandFamily: "Dream Han",
+        fontSansFamily: "Sans",
+        fontSerifFamily: "Serif",
+        fontFamilySpaceSplit: True,
+        fontLinearInterpolation: "L",
+        fontExponentialInterpolation: "E"
+    },
+    "zh-Hans": {
+        fontGrandFamily: "梦源",
+        fontSansFamily: "黑体",
+        fontSerifFamily: "宋体",
+        fontFamilySpaceSplit: False,
+        fontLinearInterpolation: "L",
+        fontExponentialInterpolation: "E"
+    },
+    "zh-Hant": {
+        fontGrandFamily: "夢源",
+        fontSansFamily: "黑體",
+        fontSerifFamily: "明體",
+        fontFamilySpaceSplit: False,
+        fontLinearInterpolation: "L",
+        fontExponentialInterpolation: "E"
+    },
+    "ja": {
+        fontGrandFamily: "夢ノ",
+        fontSansFamily: "角ゴ",
+        fontSerifFamily: "明朝",
+        fontFamilySpaceSplit: False,
+        fontLinearInterpolation: "L",
+        fontExponentialInterpolation: "E"
+    },
+    "ko": {
+        fontGrandFamily: "꿈",
+        fontSansFamily: "고딕",
+        fontSerifFamily: "명조",
+        fontFamilySpaceSplit: False,
+        fontLinearInterpolation: "L",
+        fontExponentialInterpolation: "E"
+    }
 }
 
 
-def isRegionalHw(family: str, language: str) -> bool:
-    return family == "DreamHanSansHW" and language in ["CN", "TW", "HK", "JP", "KR"]
+def makeFontFamilyName(typefaceFamily: str, interpolationType: str, languageRegion: str, forDefaultLanguage: bool = False) -> str:
+    localization: str = languageCodeToLocalization[languageRegionToCode[languageRegion]]
+    if forDefaultLanguage:
+        localization = languageCodeToLocalization[languageRegionToCode[DEFAULT_LANGUAGE]]
+    if localization[fontFamilySpaceSplit]:
+        return " ".join((localization[fontGrandFamily], localization[typefaceFamily], localization[interpolationType], languageRegion))
+    else:
+        return " ".join((localization[fontGrandFamily] + localization[typefaceFamily], localization[interpolationType], languageRegion))
 
 
-def makeFontFamilyName(family: str, language: str):
-    englishFamily: str = familyEnglishDict[family] + " " + language
-    localizedFamily: str = familyTranslationDict[family][language] + " " + language
-    return englishFamily, localizedFamily
+def makeFontWeight(interpolationType: str, weight: int, languageRegion: str = DEFAULT_LANGUAGE) -> str:
+    return languageCodeToLocalization[languageRegionToCode[languageRegion]][interpolationType] + str(weight)
 
 
-def makeFontWeight(weight: int) -> str:
-    return "W" + str(weight)
+def makeTomlFileName(family: str, weightName: str) -> str:
+    return family.replace(" ", "") + "-" + weightName + ".toml"
 
 
-def makeVersionString(family: str) -> str:
-    return "Version " + str(familyVersionDict[family])
-
-
-def makeTomlFileName(family: str, language: str, weight: int) -> str:
-    return family + language + "-" + makeFontWeight(weight) + ".toml"
-
-
-def makeGeneral(family: str) -> dict:
+def makeGeneral() -> dict:
     return {
-        "version": familyVersionDict[family],
+        "version": fontVersion,
         "createdTime": today,
         "modifiedTime": today,
         "embeddingRestriction": 0
     }
 
 
-def makeName(family: str, language: str, weight: int) -> dict:
-    englishFamily, localizedFamily = makeFontFamilyName(family, language)
-    englishNameDictionary = {
-        "fontFamily": englishFamily,
-        "fontSubfamily": makeFontWeight(weight),
-        "versionString": makeVersionString(family),
-        "copyright": familyEnglishDict[family] + " is free to use under OFL license.",
-        "trademark": familyEnglishDict[family] + " is not any trademark registered.",
-        "description": "Compiled by Pal3love (https://github.com/Pal3love); inspired by Adobe Source Han fonts.",
+def makeName(typefaceFamily: str, interpolationType: str, weight: int, languageRegion: str) -> dict:
+    englishFontFamily: str = makeFontFamilyName(typefaceFamily, interpolationType, languageRegion, True)
+    englishNameDictionary: dict = {
+        "fontFamily": englishFontFamily,
+        "fontSubfamily": makeFontWeight(interpolationType, weight),
+        "versionString": fontVersionString,
+        "copyright": englishFontFamily + " is free to use under OFL license.",
+        "trademark": englishFontFamily + " is not any trademark registered.",
+        "description": "Compiled by Pal3love (https://github.com/Pal3love); interpolated from Adobe Source Han fonts.",
         "designer": "Pal3love",
         "designerURL": "https://github.com/Pal3love",
         "distributor": "Pal3love",
@@ -125,50 +144,52 @@ def makeName(family: str, language: str, weight: int) -> dict:
         "license": 'This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.',
         "licenseURL": "http://scripts.sil.org/OFL"
     }
-    localizedNameDictionary = {
-        "fontFamily": localizedFamily,
-        "fontSubfamily": makeFontWeight(weight)
+    localizedNameDictionary: dict = {
+        "fontFamily": makeFontFamilyName(typefaceFamily, interpolationType, languageRegion),
+        "fontSubfamily": makeFontWeight(interpolationType, weight, languageRegion)
     }
     return {
-        "en": englishNameDictionary,
-        languageNameKeyDict[language]: localizedNameDictionary
+        languageRegionToCode[DEFAULT_LANGUAGE]: englishNameDictionary,
+        languageRegionToCode[languageRegion]: localizedNameDictionary
     }
 
 
-def makeStyle(weight: int) -> dict:
+def makeStyle(interpolationType: str, weight: int) -> dict:
+    styleLinkRegular: int = interpolationToStyleLink[interpolationType][fontStyleLinkRegular]
+    styleLinkBold: int = interpolationToStyleLink[interpolationType][fontStyleLinkBold]
     style = {
         "widthScale": 5,
         "forcePreferredFamily": True,
         "styleLink": 0
     }
-    if weight == 40:
+    if weight == styleLinkRegular:
         style["styleLink"] = 1
-        style["weightScale"] = 4
-    elif weight == 70:
+    elif weight == styleLinkBold:
         style["styleLink"] = 2
-        style["weightScale"] = 7
     else:
         pass
     return style
 
 
-def makeConfiguration(family: str, language: str, weight: int) -> dict:
+def makeConfiguration(typefaceFamily: str, interpolationType: str, weight: int, languageRegion: str) -> dict:
     return {
-        "General": makeGeneral(family),
-        "Name": makeName(family, language, weight),
-        "Style": makeStyle(weight)
+        "General": makeGeneral(),
+        "Name": makeName(typefaceFamily, interpolationType, weight, languageRegion),
+        "Style": makeStyle(interpolationType, weight)
     }
 
 
 def main():
-    for family in fontFamilies:
-        for language in languagesAndRegions:
-            for weight in weights:
-                if isRegionalHw(family, language):
-                    continue
-                tomlFile = open(makeTomlFileName(family, language, weight), "w", encoding = "utf-8")
-                tomlConfiguration: dict = makeConfiguration(family, language, weight)
-                toml.dump(tomlConfiguration, tomlFile)
+    for typefaceFamily in typefaceFamilies:
+        for interpolationType in interpolationTypes:
+            for languageRegion in languageRegions:
+                for weight in interpolationToWeights[interpolationType]:
+                    familyName: str = makeFontFamilyName(typefaceFamily, interpolationType, languageRegion, True)
+                    weightName: str = makeFontWeight(interpolationType, weight)
+                    fileName: str = makeTomlFileName(familyName, weightName)
+                    tomlFile = open(fileName, "w", encoding = "utf-8")
+                    tomlDict: dict = makeConfiguration(typefaceFamily, interpolationType, weight, languageRegion)
+                    toml.dump(tomlDict, tomlFile)
     return
 
 
