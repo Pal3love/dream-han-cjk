@@ -191,12 +191,13 @@ function compress_ttc() {
     for font_typeface in ${font_typefaces[@]}; do
         for font_interpolation_type in ${font_interpolation_types[@]}; do
             limit_parallels; {
-            ttcs=""
-            for ttc_path in `ls ${font_grand_family}${font_typeface}${font_interpolation_type}-*.ttc`; do
-                ttcs+="${ttc_path} "
-            done
-            zip ${font_grand_family}${font_typeface}${font_interpolation_type}.zip ${ttcs}
-        } & done
+                ttcs=""
+                for ttc_path in `ls ${font_grand_family}${font_typeface}${font_interpolation_type}-*.ttc`; do
+                    ttcs+="${ttc_path} "
+                done
+                zip ${font_grand_family}${font_typeface}${font_interpolation_type}.zip ${ttcs}
+            } &
+        done
     done
     wait
 }
@@ -206,12 +207,13 @@ function compress_ttf() {
         for font_interpolation_type in ${font_interpolation_types[@]}; do
             for font_region in ${font_regions[@]}; do
                 limit_parallels; {
-                ttfs=""
-                for ttf_path in `ls ${font_grand_family}${font_typeface}${font_interpolation_type}${font_region}-*.ttf`; do
-                    ttfs+="${ttf_path} "
-                done
-                zip ${font_grand_family}${font_typeface}${font_interpolation_type}${font_region}.zip ${ttfs}
-            } & done
+                    ttfs=""
+                    for ttf_path in `ls ${font_grand_family}${font_typeface}${font_interpolation_type}${font_region}-*.ttf`; do
+                        ttfs+="${ttf_path} "
+                    done
+                    zip ${font_grand_family}${font_typeface}${font_interpolation_type}${font_region}.zip ${ttfs}
+                } &
+            done
         done
     done
     wait
@@ -219,7 +221,7 @@ function compress_ttf() {
 
 function main() {
     # Go to root.
-    cd ../
+    cd ..
 
     # Clean up & recreate temp & output folders.
     rm -rf ${temp_folder}
