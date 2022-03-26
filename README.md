@@ -79,7 +79,7 @@
 * `sudo apt install zip`（仅供 WSL，macOS 已自带）
 * `sudo apt install rename`（仅供 WSL，macOS 已自带）
 
-### 执行编译脚本
+### 执行脚本
 
 * WSL: `cd` 进 script 目录后，执行 `./build_fonts_wsl.sh`
 * macOS: `cd` 进 script 目录后，执行 `./build_fonts_mac.sh`
@@ -88,7 +88,7 @@
 
 ## 更多信息
 
-如需获取 Adobe 思源系列字体的设计、使用以及其他信息，请访问官方 GitHub 仓库。
+如需获取 Adobe 思源系列字体的设计、使用以及其他信息，请访问以下官方 GitHub 仓库。
 
 * [思源黑体（Source Han Sans）](https://github.com/adobe-fonts/source-han-sans)
 * [思源宋体（Source Han Serif）](https://github.com/adobe-fonts/source-han-serif)
