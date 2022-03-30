@@ -103,7 +103,7 @@ function convert() {
         font_file_name="${font_path##*/}"
         font_file="${font_file_name%.*}"
         limit_parallels; {
-            ../${binary_folder}/${otrebuild_binary} --UPM 2048 --O1 -c ${font_file}.toml -o ../${release_folder}/${font_file}.ttf ${font_path}
+            ../${binary_folder}/${otrebuild_binary} --UPM 2048 --O1 --removeHinting -c ${font_file}.toml -o ../${release_folder}/${font_file}.ttf ${font_path}
         } &
     done
     wait
