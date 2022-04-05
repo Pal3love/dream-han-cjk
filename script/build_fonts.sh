@@ -44,17 +44,17 @@ function set_platform() {
       wsl)
         ;;
       linux)
-        if grep -iq 'magic 4d5a' /proc/sys/fs/binfmt_misc/*; then
-            # 4d5a == 'MZ', the PE magic.
-            # Wine is registerd as binfmt handler for PE files.
-            # Do nothing. Just act like WSL.
+        if grep -iq "magic 4d5a" /proc/sys/fs/binfmt_misc/*; then
+            # 4d5a == "MZ", i.e. the PE magic.
+            # Wine is registered as binfmt handler for PE files.
+            # Do nothing; just act like WSL.
             :
         elif wine --help >/dev/null 2>&1; then
             # `wine` command available.
             # Call otrebuilder via `wine otrebuilder.exe`.
             otrebuild_wrapper="wine"
         else
-            echo 'Wine required.'
+            echo "Wine required"
             print_usage_and_exit
         fi
         ;;
@@ -108,10 +108,10 @@ function instantiate() {
 
 function rename() {
     pattern=$1
-    while [[ $# > 1 ]] ; do
+    while [[ $# > 1 ]]; do
         shift
-        newFilename=$(echo "$1" | sed "$pattern")
-        mv $1 $newFilename
+        new_file_name=$(echo "$1" | sed "${pattern}")
+        mv $1 ${new_file_name}
     done
 }
 
