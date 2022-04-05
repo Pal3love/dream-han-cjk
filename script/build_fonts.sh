@@ -8,6 +8,7 @@ script_file_name="build_fonts.sh"
 otrebuild_win="otrebuild_win.exe"
 otrebuild_mac="otrebuild_mac"
 otrebuild_binary=${otrebuild_win}
+otrebuild_wrapper=
 
 binary_folder="binary"
 release_folder="release"
@@ -30,7 +31,7 @@ font_style_link_weights=(${font_style_link_regulars[@]} ${font_style_link_bolds[
 
 
 function print_usage_and_exit() {
-    echo "Usage: ${script_file_name} <platform: wsl or mac> <maximum parallel jobs>"
+    echo "Usage: ${script_file_name} <platform: wsl | linux | mac> <maximum parallel jobs>"
     exit 1
 }
 
@@ -39,11 +40,30 @@ function is_number() {
 }
 
 function set_platform() {
-    if [ $1 == "mac" ]; then
+    case $1 in
+      wsl)
+        ;;
+      linux)
+        if grep -iq 'magic 4d5a' /proc/sys/fs/binfmt_misc/*; then
+            # 4d5a == 'MZ', the PE magic.
+            # Wine is registerd as binfmt handler for PE files.
+            # Do nothing. Just act like WSL.
+            :
+        elif wine --help >/dev/null 2>&1; then
+            # `wine` command available.
+            # Call otrebuilder via `wine otrebuilder.exe`.
+            otrebuild_wrapper="wine"
+        else
+            echo 'Wine required.'
+            print_usage_and_exit
+        fi
+        ;;
+      mac)
         otrebuild_binary=${otrebuild_mac}
-    elif [ $1 != "wsl" ]; then
+        ;;
+      *)
         print_usage_and_exit
-    fi
+    esac
     echo "Set platform to $1"
 }
 
@@ -86,6 +106,15 @@ function instantiate() {
     wait
 }
 
+function rename() {
+    pattern=$1
+    while [[ $# > 1 ]] ; do
+        shift
+        newFilename=$(echo "$1" | sed "$pattern")
+        mv $1 $newFilename
+    done
+}
+
 function rename_instances() {
     rename "s/VF-//" *VF-*.ttf
     rename "s/^SourceHan/${font_grand_family}/" SourceHan*.ttf
@@ -103,7 +132,7 @@ function convert() {
         font_file_name="${font_path##*/}"
         font_file="${font_file_name%.*}"
         limit_parallels; {
-            ../${binary_folder}/${otrebuild_binary} --UPM 2048 --O1 --removeHinting -c ${font_file}.toml -o ../${release_folder}/${font_file}.ttf ${font_path}
+            ${otrebuild_wrapper} ../${binary_folder}/${otrebuild_binary} --UPM 2048 --O1 --removeHinting -c ${font_file}.toml -o ../${release_folder}/${font_file}.ttf ${font_path}
         } &
     done
     wait
