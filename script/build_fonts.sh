@@ -186,7 +186,7 @@ function patch_style_link() {
             python3 ../${script_folder}/turn_on_OS2f2_regular.py ${font_path}
         } &
     done
-    for font_path in `ls *${font_typeface_serif}*-?${font_style_link_serif_regular}.ttf`; do
+    for font_path in `ls *${font_typeface_serif}*-?${font_style_link_serif_bold}.ttf`; do
         limit_parallels; {
             python3 ../${script_folder}/trim_english_legacy_family.py ${font_path}
         } &
