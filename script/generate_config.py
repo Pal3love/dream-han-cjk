@@ -9,38 +9,34 @@ from datetime import datetime
 
 today: datetime = datetime.today()
 
-DEFAULT_LANGUAGE = "EN"
+DEFAULT_LANGUAGE: str = "EN"
 
 fontGrandFamily: str = "fontGrandFamily"
 fontSansFamily: str = "fontSansFamily"
 fontSerifFamily: str = "fontSerifFamily"
 fontFamilySpaceSplit: str = "fontFamilySpaceSplit"
-fontLinearInterpolation: str = "fontLinearInterpolation"
-fontExponentialInterpolation: str = "fontExponentialInterpolation"
 fontStyleLinkRegular: str = "fontStyleLinkRegular"
 fontStyleLinkBold: str = "fontStyleLinkBold"
+fontWeightPrefix: str = "fontWeightPrefix"
+fontDistributor: str = "fontDistributor"
 
-fontVersion: float = 2.000
+fontVersion: float = 3.000
 fontSansVersion: float = 2.004
 fontSerifVersion: float = 2.001
 fontVersionString: str = "Version " + "{:.2f}".format(fontVersion) + "; Sans " + str(fontSansVersion) + "; Serif " + str(fontSerifVersion)
 
-typefaceFamilies = [fontSansFamily, fontSerifFamily]
-interpolationTypes = [fontLinearInterpolation, fontExponentialInterpolation]
-languageRegions = ["SC", "TC", "HC", "J", "K", "CN", "TW", "HK", "JP", "KR"]
+typefaceFamilies: list = [fontSansFamily, fontSerifFamily]
+languageRegions: list = ["SC", "TC", "HC", "J", "K", "CN", "TW", "HK", "JP", "KR"]
+fontWeights: list = list(range(1, 28))
 
-interpolationToWeights: dict = {
-    fontLinearInterpolation: [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90],
-    fontExponentialInterpolation: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-}
-interpolationToStyleLink: dict = {
-    fontLinearInterpolation: {
-        fontStyleLinkRegular: 40,
-        fontStyleLinkBold: 70
+typefaceToStyleLink: dict = {
+    fontSansFamily: {
+        fontStyleLinkRegular: 12,
+        fontStyleLinkBold: 22
     },
-    fontExponentialInterpolation: {
-        fontStyleLinkRegular: 6,
-        fontStyleLinkBold: 12
+    fontSerifFamily: {
+        fontStyleLinkRegular: 7,
+        fontStyleLinkBold: 20
     }
 }
 languageRegionToCode: dict = {
@@ -62,56 +58,56 @@ languageCodeToLocalization: dict = {
         fontSansFamily: "Sans",
         fontSerifFamily: "Serif",
         fontFamilySpaceSplit: True,
-        fontLinearInterpolation: "L",
-        fontExponentialInterpolation: "E"
+        fontWeightPrefix: "W",
+        fontDistributor: "Pal3love"
     },
     "zh-Hans": {
         fontGrandFamily: "梦源",
         fontSansFamily: "黑体",
         fontSerifFamily: "宋体",
         fontFamilySpaceSplit: False,
-        fontLinearInterpolation: "L",
-        fontExponentialInterpolation: "E"
+        fontWeightPrefix: "W",
+        fontDistributor: "梦回琼华"
     },
     "zh-Hant": {
         fontGrandFamily: "夢源",
         fontSansFamily: "黑體",
         fontSerifFamily: "明體",
         fontFamilySpaceSplit: False,
-        fontLinearInterpolation: "L",
-        fontExponentialInterpolation: "E"
+        fontWeightPrefix: "W",
+        fontDistributor: "夢回瓊華"
     },
     "ja": {
         fontGrandFamily: "夢ノ",
         fontSansFamily: "角ゴ",
         fontSerifFamily: "明朝",
         fontFamilySpaceSplit: False,
-        fontLinearInterpolation: "L",
-        fontExponentialInterpolation: "E"
+        fontWeightPrefix: "W",
+        fontDistributor: "夢回瓊華"
     },
     "ko": {
         fontGrandFamily: "꿈",
         fontSansFamily: "고딕",
         fontSerifFamily: "명조",
         fontFamilySpaceSplit: False,
-        fontLinearInterpolation: "L",
-        fontExponentialInterpolation: "E"
+        fontWeightPrefix: "W",
+        fontDistributor: "夢回瓊華"
     }
 }
 
 
-def makeFontFamilyName(typefaceFamily: str, interpolationType: str, languageRegion: str, forDefaultLanguage: bool = False) -> str:
+def makeFontFamilyName(typefaceFamily: str, languageRegion: str, forDefaultLanguage: bool = False) -> str:
     localization: str = languageCodeToLocalization[languageRegionToCode[languageRegion]]
     if forDefaultLanguage:
         localization = languageCodeToLocalization[languageRegionToCode[DEFAULT_LANGUAGE]]
     if localization[fontFamilySpaceSplit]:
-        return " ".join((localization[fontGrandFamily], localization[typefaceFamily], localization[interpolationType], languageRegion))
+        return " ".join((localization[fontGrandFamily], localization[typefaceFamily], languageRegion))
     else:
-        return " ".join((localization[fontGrandFamily] + localization[typefaceFamily], localization[interpolationType], languageRegion))
+        return " ".join((localization[fontGrandFamily] + localization[typefaceFamily], languageRegion))
 
 
-def makeFontWeight(interpolationType: str, weight: int, languageRegion: str = DEFAULT_LANGUAGE) -> str:
-    return languageCodeToLocalization[languageRegionToCode[languageRegion]][interpolationType] + str(weight)
+def makeFontWeight(weight: int, languageRegion: str = DEFAULT_LANGUAGE) -> str:
+    return languageCodeToLocalization[languageRegionToCode[languageRegion]][fontWeightPrefix] + str(weight)
 
 
 def makeTomlFileName(family: str, weightName: str) -> str:
@@ -127,26 +123,27 @@ def makeGeneral() -> dict:
     }
 
 
-def makeName(typefaceFamily: str, interpolationType: str, weight: int, languageRegion: str) -> dict:
-    englishFontFamily: str = makeFontFamilyName(typefaceFamily, interpolationType, languageRegion, True)
+def makeName(typefaceFamily: str, weight: int, languageRegion: str) -> dict:
+    englishFontFamily: str = makeFontFamilyName(typefaceFamily, languageRegion, True)
     englishNameDictionary: dict = {
         "fontFamily": englishFontFamily,
-        "fontSubfamily": makeFontWeight(interpolationType, weight),
+        "fontSubfamily": makeFontWeight(weight),
         "versionString": fontVersionString,
         "copyright": englishFontFamily + " is free to use under OFL license.",
-        "trademark": englishFontFamily + " is not any trademark registered.",
+        "trademark": englishFontFamily + " is not any registered trademark.",
         "description": "Compiled by Pal3love (https://github.com/Pal3love); interpolated from Adobe Source Han fonts.",
-        "designer": "Pal3love",
-        "designerURL": "https://github.com/Pal3love",
-        "distributor": "Pal3love",
+        "designer": "Adobe",
+        "designerURL": "http://www.adobe.com/type/",
+        "distributor": languageCodeToLocalization[languageRegionToCode[DEFAULT_LANGUAGE]][fontDistributor],
         "distributorID": "P3LV",
         "distributorURL": "https://github.com/Pal3love/dream-han-cjk",
         "license": 'This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.',
         "licenseURL": "http://scripts.sil.org/OFL"
     }
     localizedNameDictionary: dict = {
-        "fontFamily": makeFontFamilyName(typefaceFamily, interpolationType, languageRegion),
-        "fontSubfamily": makeFontWeight(interpolationType, weight, languageRegion)
+        "fontFamily": makeFontFamilyName(typefaceFamily, languageRegion),
+        "fontSubfamily": makeFontWeight(weight, languageRegion),
+        "distributor": languageCodeToLocalization[languageRegionToCode[languageRegion]][fontDistributor]
     }
     return {
         languageRegionToCode[DEFAULT_LANGUAGE]: englishNameDictionary,
@@ -154,9 +151,9 @@ def makeName(typefaceFamily: str, interpolationType: str, weight: int, languageR
     }
 
 
-def makeStyle(interpolationType: str, weight: int) -> dict:
-    styleLinkRegular: int = interpolationToStyleLink[interpolationType][fontStyleLinkRegular]
-    styleLinkBold: int = interpolationToStyleLink[interpolationType][fontStyleLinkBold]
+def makeStyle(typefaceFamily: str, weight: int) -> dict:
+    styleLinkRegular: int = typefaceToStyleLink[typefaceFamily][fontStyleLinkRegular]
+    styleLinkBold: int = typefaceToStyleLink[typefaceFamily][fontStyleLinkBold]
     style = {
         "widthScale": 5,
         "forcePreferredFamily": True,
@@ -171,25 +168,24 @@ def makeStyle(interpolationType: str, weight: int) -> dict:
     return style
 
 
-def makeConfiguration(typefaceFamily: str, interpolationType: str, weight: int, languageRegion: str) -> dict:
+def makeConfiguration(typefaceFamily: str, weight: int, languageRegion: str) -> dict:
     return {
         "General": makeGeneral(),
-        "Name": makeName(typefaceFamily, interpolationType, weight, languageRegion),
-        "Style": makeStyle(interpolationType, weight)
+        "Name": makeName(typefaceFamily, weight, languageRegion),
+        "Style": makeStyle(typefaceFamily, weight)
     }
 
 
 def main():
     for typefaceFamily in typefaceFamilies:
-        for interpolationType in interpolationTypes:
-            for languageRegion in languageRegions:
-                for weight in interpolationToWeights[interpolationType]:
-                    familyName: str = makeFontFamilyName(typefaceFamily, interpolationType, languageRegion, True)
-                    weightName: str = makeFontWeight(interpolationType, weight)
-                    fileName: str = makeTomlFileName(familyName, weightName)
-                    tomlFile = open(fileName, "w", encoding = "utf-8")
-                    tomlDict: dict = makeConfiguration(typefaceFamily, interpolationType, weight, languageRegion)
-                    toml.dump(tomlDict, tomlFile)
+        for languageRegion in languageRegions:
+            for weight in fontWeights:
+                familyName: str = makeFontFamilyName(typefaceFamily, languageRegion, True)
+                weightName: str = makeFontWeight(weight)
+                fileName: str = makeTomlFileName(familyName, weightName)
+                tomlFile = open(fileName, "w", encoding = "utf-8")
+                tomlDict: dict = makeConfiguration(typefaceFamily, weight, languageRegion)
+                toml.dump(tomlDict, tomlFile)
     return
 
 

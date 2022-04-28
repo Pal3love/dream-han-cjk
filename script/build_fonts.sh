@@ -17,17 +17,33 @@ source_folder="source"
 temp_folder="temp"
 
 font_grand_family="DreamHan"
-font_typefaces=(Sans Serif)
-font_interpolation_types=(L E)
+font_typeface_sans="Sans"
+font_typeface_serif="Serif"
+font_typefaces=(${font_typeface_sans} ${font_typeface_serif})
 font_languages=(SC TC HC J K)
 font_regions=(CN TW HK JP KR)
 font_languages_and_regions=(${font_languages[@]} ${font_regions[@]})
-font_linear_weights=(25 30 35 40 45 50 55 60 65 70 75 80 85 90)
-font_exponential_weights=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
-font_exponential_interpolations=("250" "275" "302.5" "332.75" "366.025" "402.6275" "442.89025" "487.179275" "535.8972025" "589.4869228" "648.435615" "713.2791765" "784.6070942" "863.0678036" "900")
-font_style_link_regulars=(40 6)
-font_style_link_bolds=(70 12)
-font_style_link_weights=(${font_style_link_regulars[@]} ${font_style_link_bolds[@]})
+font_weight_prefix="W"
+font_weights=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27)
+font_interpolations_linear=("250" "275" "300" "325" "350" "375" "400" "425" "450" "475" "500" "525" "550" "575" "600" "625" "650" "675" "700" "725" "750" "775" "800" "825" "850" "875" "900")
+font_interpolations_quadratic=("250" "270.4" "291.01" "311.85" "332.94" "354.3" "375.95" "397.91" "420.2" "442.84" "465.85" "489.25" "513.06" "537.3" "561.99" "587.15" "612.8" "638.96" "665.65" "692.89" "720.7" "749.1" "778.11" "807.75" "838.04" "869" "900")
+font_style_link_sans_regular=12
+font_style_link_sans_bold=22
+font_style_link_serif_regular=7
+font_style_link_serif_bold=20
+
+
+# Font Weights without `avar`
+# ---
+# Sans: Regular 500, Bold 760
+# Serif: Regular 390, Bold 725
+
+# Quadratic Interpolation Algorithm
+# ---
+# wght = prev_wght + 19.4 + factor ^ 2
+# factor = prev_factor + 0.1
+# initial_wght = 250
+# initial_factor = 1
 
 
 function print_usage_and_exit() {
@@ -84,22 +100,39 @@ function limit_parallels() {
     fi
 }
 
-function instantiate() {
+function drop_avar_table() {
     for font_path in *.ttf; do
         font_file_name="${font_path##*/}"
         font_file="${font_file_name%.*}"
-        for font_linear_weight in ${font_linear_weights[@]}; do
-            font_linear_file_name="${font_file}-L${font_linear_weight}.ttf"
+        limit_parallels; {
+            python3 ../${script_folder}/drop_avar_table.py ${font_path}
+        } &
+    done
+    wait
+}
+
+function instantiate() {
+    for font_path in SourceHanSans*-VF.ttf; do
+        font_file_name="${font_path##*/}"
+        font_file="${font_file_name%.*}"
+        for i in ${!font_weights[@]}; do
+            font_weight=${font_weights[i]}
+            font_interpolation=${font_interpolations_quadratic[i]}
+            font_instance_file_name="${font_file}-${font_weight_prefix}${font_weight}.ttf"
             limit_parallels; {
-                fonttools varLib.instancer -o ../../${temp_folder}/${font_linear_file_name} --remove-overlaps ${font_path} wght=${font_linear_weight}0
+                fonttools varLib.instancer -o ${font_instance_file_name} --remove-overlaps ${font_path} wght=${font_interpolation}
             } &
         done
-        for i in ${!font_exponential_weights[@]}; do
-            font_exponential_weight=${font_exponential_weights[i]}
-            font_exponential_interpolation=${font_exponential_interpolations[i]}
-            font_exponential_file_name="${font_file}-E${font_exponential_weight}.ttf"
+    done
+    for font_path in SourceHanSerif*-VF.ttf; do
+        font_file_name="${font_path##*/}"
+        font_file="${font_file_name%.*}"
+        for i in ${!font_weights[@]}; do
+            font_weight=${font_weights[i]}
+            font_interpolation=${font_interpolations_linear[i]}
+            font_instance_file_name="${font_file}-${font_weight_prefix}${font_weight}.ttf"
             limit_parallels; {
-                fonttools varLib.instancer -o ../../${temp_folder}/${font_exponential_file_name} --remove-overlaps ${font_path} wght=${font_exponential_interpolation}
+                fonttools varLib.instancer -o ${font_instance_file_name} --remove-overlaps ${font_path} wght=${font_interpolation}
             } &
         done
     done
@@ -121,9 +154,6 @@ function rename_instances() {
     for font_typeface in ${font_typefaces[@]}; do
         font_family="${font_grand_family}${font_typeface}"
         rename "s/^${font_family}-/${font_family}J-/" ${font_family}-*.ttf
-        for font_interpolation_type in ${font_interpolation_types[@]}; do
-            rename "s/^${font_family}/${font_family}${font_interpolation_type}/" ${font_family}*-${font_interpolation_type}*.ttf
-        done
     done
 }
 
@@ -132,50 +162,44 @@ function convert() {
         font_file_name="${font_path##*/}"
         font_file="${font_file_name%.*}"
         limit_parallels; {
-            ${otrebuild_wrapper} ../${binary_folder}/${otrebuild_binary} --UPM 2048 --O1 --removeHinting -c ${font_file}.toml -o ../${release_folder}/${font_file}.ttf ${font_path}
+            ${otrebuild_wrapper} ../${binary_folder}/${otrebuild_binary} --UPM 2048 --O1 --removeHinting --removeGlyphNames -c ${font_file}.toml -o ../${release_folder}/${font_file}.ttf ${font_path}
         } &
     done
     wait
 }
 
-function trim_english_legacy_family() {
-    for font_style_link_weight in ${font_style_link_weights[@]}; do
-        for font_path in `ls *-?${font_style_link_weight}.ttf`; do
-            limit_parallels; {
-                python3 ../${script_folder}/trim_english_legacy_family.py ${font_path}
-            } &
-        done
+function patch_style_link() {
+    for font_path in `ls *${font_typeface_sans}*-?${font_style_link_sans_regular}.ttf`; do
+        limit_parallels; {
+            python3 ../${script_folder}/trim_english_legacy_family.py ${font_path}
+            python3 ../${script_folder}/turn_on_OS2f2_regular.py ${font_path}
+        } &
+    done
+    for font_path in `ls *${font_typeface_sans}*-?${font_style_link_sans_bold}.ttf`; do
+        limit_parallels; {
+            python3 ../${script_folder}/trim_english_legacy_family.py ${font_path}
+        } &
+    done
+    for font_path in `ls *${font_typeface_serif}*-?${font_style_link_serif_regular}.ttf`; do
+        limit_parallels; {
+            python3 ../${script_folder}/trim_english_legacy_family.py ${font_path}
+            python3 ../${script_folder}/turn_on_OS2f2_regular.py ${font_path}
+        } &
+    done
+    for font_path in `ls *${font_typeface_serif}*-?${font_style_link_serif_bold}.ttf`; do
+        limit_parallels; {
+            python3 ../${script_folder}/trim_english_legacy_family.py ${font_path}
+        } &
     done
     wait
 }
 
-function turn_on_OS2f2_regular() {
-    for font_style_link_regular in ${font_style_link_regulars[@]}; do
-        for font_path in `ls *-?${font_style_link_regular}.ttf`; do
-            limit_parallels; {
-                python3 ../${script_folder}/turn_on_OS2f2_regular.py ${font_path}
-            } &
-        done
-    done
-    wait
-}
-
-function drop_STAT_table() {
+function patch_all() {
     for font_path in *.ttf; do
         font_file_name="${font_path##*/}"
         font_file="${font_file_name%.*}"
         limit_parallels; {
             python3 ../${script_folder}/drop_STAT_table.py ${font_path}
-        } &
-    done
-    wait
-}
-
-function trim_head_ymax_ymin() {
-    for font_path in *.ttf; do
-        font_file_name="${font_path##*/}"
-        font_file="${font_file_name%.*}"
-        limit_parallels; {
             python3 ../${script_folder}/trim_head_ymax_ymin.py ${font_path}
         } &
     done
@@ -185,22 +209,13 @@ function trim_head_ymax_ymin() {
 function make_ttc() {
     for font_typeface in ${font_typefaces[@]}; do
         font_family="${font_grand_family}${font_typeface}"
-        for font_linear_weight in ${font_linear_weights[@]}; do
+        for font_weight in ${font_weights[@]}; do
             limit_parallels; {
-                linear_ttfs=""
+                ttfs=""
                 for font_language in ${font_languages[@]}; do
-                    linear_ttfs+="${font_family}L${font_language}-L${font_linear_weight}.ttf "
+                    ttfs+="${font_family}${font_language}-${font_weight_prefix}${font_weight}.ttf "
                 done
-                otf2otc -o ${font_family}L-L${font_linear_weight}.ttc ${linear_ttfs}
-            } &
-        done
-        for font_exponential_weight in ${font_exponential_weights[@]}; do
-            limit_parallels; {
-                exponential_ttfs=""
-                for font_language in ${font_languages[@]}; do
-                    exponential_ttfs+="${font_family}E${font_language}-E${font_exponential_weight}.ttf "
-                done
-                otf2otc -o ${font_family}E-E${font_exponential_weight}.ttc ${exponential_ttfs}
+                otf2otc -o ${font_family}-${font_weight_prefix}${font_weight}.ttc ${ttfs}
             } &
         done
     done
@@ -218,31 +233,27 @@ function delete_lingual_ttf() {
 
 function compress_ttc() {
     for font_typeface in ${font_typefaces[@]}; do
-        for font_interpolation_type in ${font_interpolation_types[@]}; do
-            limit_parallels; {
-                ttcs=""
-                for ttc_path in `ls ${font_grand_family}${font_typeface}${font_interpolation_type}-*.ttc`; do
-                    ttcs+="${ttc_path} "
-                done
-                zip ${font_grand_family}${font_typeface}${font_interpolation_type}.zip ${ttcs}
-            } &
-        done
+        limit_parallels; {
+            ttcs=""
+            for ttc_path in `ls ${font_grand_family}${font_typeface}-*.ttc`; do
+                ttcs+="${ttc_path} "
+            done
+            zip ${font_grand_family}${font_typeface}.zip ${ttcs}
+        } &
     done
     wait
 }
 
 function compress_ttf() {
     for font_typeface in ${font_typefaces[@]}; do
-        for font_interpolation_type in ${font_interpolation_types[@]}; do
-            for font_region in ${font_regions[@]}; do
-                limit_parallels; {
-                    ttfs=""
-                    for ttf_path in `ls ${font_grand_family}${font_typeface}${font_interpolation_type}${font_region}-*.ttf`; do
-                        ttfs+="${ttf_path} "
-                    done
-                    zip ${font_grand_family}${font_typeface}${font_interpolation_type}${font_region}.zip ${ttfs}
-                } &
-            done
+        for font_region in ${font_regions[@]}; do
+            limit_parallels; {
+                ttfs=""
+                for ttf_path in `ls ${font_grand_family}${font_typeface}${font_region}-*.ttf`; do
+                    ttfs+="${ttf_path} "
+                done
+                zip ${font_grand_family}${font_typeface}${font_region}.zip ${ttfs}
+            } &
         done
     done
     wait
@@ -258,19 +269,25 @@ function main() {
     mkdir ${temp_folder}
     mkdir ${release_folder}
 
-    # Instantiate fonts from VF masters.
+    # Copy source fonts to the temp folder.
     cd ${source_folder}/source-han-sans
-    instantiate
+    cp *.ttf ../../${temp_folder}
     cd ../source-han-serif
+    cp *.ttf ../../${temp_folder}
+
+    # Drop `avar` table to get rid of the user scale of `wght`, which is not the design space and non-linear.
+    cd ../../${temp_folder}
+    drop_avar_table
+
+    # Instantiate fonts from VF masters.
     instantiate
-    cd ../..
+    rm *-VF.ttf
 
     # Rename:
     # 1. Remove VF-related components;
     # 2. Substitute "Source" with "Dream";
     # 3. Add appendix "J" to Japanese lingual fonts;
     # 4. Append interpolation type to the end of font family.
-    cd ${temp_folder}
     rename_instances
 
     # Generate TOML configuration files.
@@ -281,17 +298,15 @@ function main() {
     # Go to release folder.
     cd ../${release_folder}
 
-    # Trim style-link font legacy families, removing incorrect subfamily from it.
-    trim_english_legacy_family
+    # Patch style-linked weights:
+    # 1. Trim font legacy family `name` tags, removing incorrect subfamily from it;
+    # 2. Turn on the `regular` bit in `OS/2` table for regular-linked fonts.
+    patch_style_link
 
-    # Turn on the `regular` bit in `OS/2` table of style-link regular-weight fonts.
-    turn_on_OS2f2_regular
-
-    # Drop `STAT` table (containing variable font metadata) from all instance fonts.
-    drop_STAT_table
-
-    # Trim `head` table's `yMax` and `yMin` for Adobe line gap.
-    trim_head_ymax_ymin
+    # Patch all fonts:
+    # 2. Drop `STAT` table (containing variable font metadata);
+    # 1. Trim `head` table's `yMax` and `yMin` in case of Adobe line gap.
+    patch_all
 
     # Combine lingual fonts into TTC files and delete component TTF files.
     make_ttc
