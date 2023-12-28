@@ -304,8 +304,8 @@ function main() {
     patch_style_link
 
     # Patch all fonts:
-    # 2. Drop `STAT` table (containing variable font metadata);
-    # 1. Trim `head` table's `yMax` and `yMin` in case of Adobe line gap.
+    # 1. Drop `STAT` table (containing variable font metadata);
+    # 2. Trim `head` table's `yMax` and `yMin` in case of Adobe line gap.
     patch_all
 
     # Combine lingual fonts into TTC files and delete component TTF files.
