@@ -199,6 +199,7 @@ function patch_all() {
         font_file_name="${font_path##*/}"
         font_file="${font_file_name%.*}"
         limit_parallels; {
+            python3 ../${script_folder}/fix_BASE_table_version.py ${font_path}
             python3 ../${script_folder}/drop_STAT_table.py ${font_path}
             python3 ../${script_folder}/trim_head_ymax_ymin.py ${font_path}
         } &
